@@ -2,7 +2,6 @@
 
 #include "common.h"
 #include "formula.h"
-
 #include <functional>
 #include <unordered_set>
 
@@ -27,10 +26,12 @@ private:
     class EmptyImpl;
     class TextImpl;
     class FormulaImpl;
-
     std::unique_ptr<Impl> impl_;
 
-    // Добавьте поля и методы для связи с таблицей, проверки циклических 
-    // зависимостей, графа зависимостей и т. д.
+    Sheet& sheet_;
+    std::unordered_set<Cell*> dependent_cells_;
+    std::unordered_set<Cell*> referenced_cells_;
 
+    bool IsCircularDependency(const Impl& tmp_impl) const;
+    void InvalidateDependentCellsCache(bool force = false);
 };
