@@ -34,4 +34,5 @@ private:
 
     bool IsCircularDependency(const Impl& tmp_impl) const;
     void InvalidateDependentCellsCache(bool force = false);
+    void UpdateReferencedCells();
 };

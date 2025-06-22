@@ -13,9 +13,7 @@ using namespace std::literals;
 Sheet::~Sheet() {}
 
 void Sheet::SetCell(Position pos, std::string text) {
-    if (!pos.IsValid()) {
-        throw InvalidPositionException("Invalid position");
-    }
+    ValidatePosition(pos);
 
     const auto cell_it = cells_.find(pos);
 
@@ -38,9 +36,7 @@ CellInterface* Sheet::GetCell(Position pos) {
 }
 
 void Sheet::ClearCell(Position pos) {
-    if (!pos.IsValid()) {
-        throw InvalidPositionException("Invalid position");
-    }
+    ValidatePosition(pos);
 
     const auto cell_it = cells_.find(pos);
     if (cell_it != cells_.end() && cell_it->second) {
@@ -118,9 +114,7 @@ void Sheet::PrintTexts(std::ostream& output) const {
 }
 
 const Cell* Sheet::GetCellPtr(Position pos) const {
-    if (!pos.IsValid()) {
-        throw InvalidPositionException("Invalid position");
-    }
+    ValidatePosition(pos);
 
     const auto cell_it = cells_.find(pos);
     if (cell_it != cells_.end()) {
@@ -132,6 +126,12 @@ const Cell* Sheet::GetCellPtr(Position pos) const {
 
 Cell* Sheet::GetCellPtr(Position pos) {
     return const_cast<Cell*>(static_cast<const Sheet*>(this)->GetCellPtr(pos));
+}
+
+void Sheet::ValidatePosition(const Position& pos) const {
+    if (!pos.IsValid()) {
+        throw InvalidPositionException("Invalid position");
+    }
 }
 
 std::unique_ptr<SheetInterface> CreateSheet() {

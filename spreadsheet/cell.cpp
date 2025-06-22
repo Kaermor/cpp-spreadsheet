@@ -151,6 +151,26 @@ void Cell::InvalidateDependentCellsCache(bool force) {
     }
 }
 
+void Cell::UpdateReferencedCells() {
+    for (Cell* ref_cell : referenced_cells_) {
+        ref_cell->dependent_cells_.erase(this);
+    }
+
+    referenced_cells_.clear();
+
+    for (const auto& pos : impl_->GetReferencedCells()) {
+        Cell* ref_cell = sheet_.GetCellPtr(pos);
+
+        if (!ref_cell) {
+            sheet_.SetCell(pos, "");
+            ref_cell = sheet_.GetCellPtr(pos);
+        }
+
+        referenced_cells_.insert(ref_cell);
+        ref_cell->dependent_cells_.insert(this);
+    }
+}
+
 Cell::Cell(Sheet& sheet)
 : impl_(std::make_unique<EmptyImpl>())
 , sheet_(sheet) {}
@@ -174,29 +194,13 @@ void Cell::Set(std::string text) {
 
     impl_ = std::move(tmp_impl);
 
-    for (Cell* ref_cell : referenced_cells_) {
-        ref_cell->dependent_cells_.erase(this);
-    }
-
-    referenced_cells_.clear();
-
-    for (const auto& pos : impl_->GetReferencedCells()) {
-        Cell* ref_cell = sheet_.GetCellPtr(pos);
-
-        if (!ref_cell) {
-            sheet_.SetCell(pos, "");
-            ref_cell = sheet_.GetCellPtr(pos);
-        }
-
-        referenced_cells_.insert(ref_cell);
-        ref_cell->dependent_cells_.insert(this);
-    }
+    UpdateReferencedCells();
 
     InvalidateDependentCellsCache(true);
 }
 
 void Cell::Clear() {
-    impl_ = std::make_unique<EmptyImpl>();
+    this->Set("");
 }
 
 Cell::Value Cell::GetValue() const {

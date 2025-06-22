@@ -48,4 +48,6 @@ private:
     Table cells_;
     std::unordered_map<int, int> row_sizes_;
     std::unordered_map<int, int> col_sizes_;
+
+    void ValidatePosition(const Position& pos) const;
 };
