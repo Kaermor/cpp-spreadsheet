@@ -23,4 +23,4 @@ ASSERT_EQUAL(std::get<double>(cell_A5_ptr->GetValue()), 18);
 2. Install ANTLR (ANother Tool for Language Recognition).
 3. Check the file name antlr-X.X.X-complete.jar in the FindANTLR.cmake and CMakeLists.txt files for the correct version. Replace "X.X.X" with your version of antlr.
 4. Create a folder named "antlr4_runtime" without quotes and download the files to it.
-5. Run cmake build with CMakeLists.txt.
+5. Run cmake build with CMakeLists.txt
